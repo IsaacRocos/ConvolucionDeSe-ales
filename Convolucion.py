@@ -5,6 +5,7 @@ import pylab as pl
 import numpy as np
 import math
 
+#Lista que almacena las seniales y su convolucion. Las seniales son de tipo np.array
 listaSenialesContinuas = []
 
 #Funcion principal para convolución de señales continuas.
@@ -22,6 +23,8 @@ def continuas():
 	try:
 		seniales[int(entrada[0])]()
 		seniales[int(entrada[1])]()
+		convoluciona(listaSenialesContinuas)
+		graficarConvolucion(listaSenialesContinuas[2])
 		pl.show()
 	except KeyError:
 		print "Valor no definido como opcion"
@@ -29,7 +32,7 @@ def continuas():
 		print "Error inesperado en funcion: Continuas"
 
 def creaFunSeno():
-	print "Señal Seno"
+	print "|Señal Seno|"
 	intervalo = input('>>Intervalo[li1,ls]: ')
 	numeroMuestras = input('>>Muestras: ')
 	X = np.linspace(intervalo[0], intervalo[1], numeroMuestras, endpoint=True)
@@ -38,7 +41,7 @@ def creaFunSeno():
 	listaSenialesContinuas.append(S)
 
 def creaFunCoseno():
-	print "Señal Coseno"
+	print "|Señal Coseno|"
 	intervalo = input('>>Intervalo[li1,ls]: ')
 	numeroMuestras = input('>>Muestras: ')
 	X = np.linspace(intervalo[0], intervalo[1], numeroMuestras, endpoint=True)
@@ -59,6 +62,23 @@ def discretas():
 	print "Discretas no definidas aún"
 
 
+#Funcion que convoluciona dos señales.
+#@Param seniales: Es una lista con los valores de las 2 seniales a convolucionar.
+#Agrega la lista resultante senialRes a la lista recibida seniales.
+def convoluciona(seniales):
+    senial1   = seniales[0]
+    senial2   = seniales[1]
+    senialRes = []
+    for i in range(len(senial1)+len(senial2)-1):
+		senialRes.append(0)
+    i=0
+    j=0
+    for i in range (len(senial1)):
+    	for j in range (len(senial2)):
+            senialRes[i+j]=senialRes[i+j]+senial1[i]*senial2[j]
+    seniales.append(np.array(senialRes)) # Cast de <list> a <np.array> para usarse en graficador
+
+#FUNCION PRINCIPAL
 def main():
 	print "\n**************\n* CONVOLUCION *\n**************\n"
 	print ">>Seleccione el tipo de señales que quiere usar:"
@@ -74,6 +94,21 @@ def main():
 		print "Error inesperado: " , type(ex)
 
 
+def graficarConvolucion(senialRes):
+	print "graficarConvolucion: Aun no definida correctamente"
+	X = np.linspace(-6.28, 6.28, 99, endpoint=True)
+	pl.plot(X,senialRes)
+	
+
+
+#Imprime los elementos de una lista, en este caso, se usa para imprimir el resultado de la convolucion.
+def imrpimeRes(resultado):
+	for valor in resultado:
+		print valor
+
+
+#Funcion para probar funcionamiento de convolucion.
+#Se definen un par de señales y se obtiene su convolucion.
 def prueba():
 	lista1 = [1,0,-1,0,1,0,-1] #coseno(nPI)
 	lista2 = [0,1,0] #impulso desplazado
@@ -83,21 +118,6 @@ def prueba():
 	convoluciona(lista1,lista2,lista3)
 	imrpimeRes(lista3)
 
-#Funcion que convoluciona dos señales.
-def convoluciona(senial1,senial2,senialRes):
-    i=0
-    j=0
-    for i in range (len(senial1)):
-    	for j in range (len(senial2)):
-            senialRes[i+j]=senialRes[i+j]+senial1[i]*senial2[j]
-
-def graficar(senial1,senial2,senialRes):
-	print ""
-
-#Imprime los elementos de una lista, en este caso, se usa para imprimir el resultado de la convolucion.
-def imrpimeRes(resultado):
-	for valor in resultado:
-		print valor
 
 
 main()
