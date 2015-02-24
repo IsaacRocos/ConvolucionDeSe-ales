@@ -7,6 +7,7 @@ import math
 
 #Lista que almacena las seniales y su convolucion. Las seniales son de tipo np.array
 listaSenialesContinuas = []
+limite = 0
 
 #Funcion principal para convolución de señales continuas.
 #Invoca a la funciónes correspondientes a la selección del usuario para generar su señal.
@@ -29,45 +30,91 @@ def continuas():
 	except KeyError:
 		print "Valor no definido como opcion"
 	except Exception as ex:
-		print "Error inesperado en funcion: Continuas"
+		print "Error inesperado en funcion: Continuas" , type(ex)
 
 def creaFunSeno():
 	print "|Señal Seno|"
-	intervalo = input('>>Intervalo[li1,ls]: ')
-	numeroMuestras = input('>>Muestras: ')
-	X = np.linspace(intervalo[0], intervalo[1], numeroMuestras, endpoint=True)
+	intervalo = input('>>Intervalo[t0=0,t]: ')
+	amplitud = input('>>Amplitud: ')
+	global limite 
+	limite = limite + intervalo
+	X = np.linspace(0, intervalo, 50, endpoint=True)
 	S = np.sin(X)
+	amplificar(S,amplitud)
 	pl.plot(X,S)
 	listaSenialesContinuas.append(S)
 
 def creaFunCoseno():
 	print "|Señal Coseno|"
-	intervalo = input('>>Intervalo[li1,ls]: ')
-	numeroMuestras = input('>>Muestras: ')
-	X = np.linspace(intervalo[0], intervalo[1], numeroMuestras, endpoint=True)
+	intervalo = input('>>Intervalo[t0=0,t]: ')
+	amplitud = input('>>Amplitud: ')
+	global limite 
+	limite = limite + intervalo
+	X = np.linspace(0, intervalo, 50, endpoint=True)
 	C = np.cos(X)
+	amplificar(C,amplitud)
 	pl.plot(X,C)
 	listaSenialesContinuas.append(C)
 
 def creaFunCompuerta():
-	print "Aun no definida"
+	print "|Señal Compuerta|"
+	intervalo = input('>>Intervalo[t0=0,t]: ')
+	amplitud = input('>>Amplitud: ')
+	global limite 
+	limite = limite + intervalo
+	X = np.linspace(0, intervalo, 50, endpoint=True)
+	tabAmplitud = []
+	for i in range (len(X)):
+		tabAmplitud.append(amplitud)
+	C = np.array(tabAmplitud)
+	pl.plot(X,C)
+	listaSenialesContinuas.append(C)
 
 def creaFunRecta():
-	print "Aun no definida"
+	print "|Señal Recta|"
+	intervalo = input('>>Intervalo[t0=0,t]: ')
+	amplitud = input('>>Amplitud: ')
+	global limite 
+	limite = limite + intervalo
+	X = np.linspace(0, intervalo, intervalo, endpoint=True)
+	C = []
+	for i in range (len(X)):
+		C.append(X[i])
+		print C[i]
+	amplificar(C,amplitud)
+	pl.plot(X,np.array(C))
+	listaSenialesContinuas.append(C)	
+
 
 def creaFunExponencial():
-	print "Aun no definida"
+	print "|Señal Exponencial|"
+	intervalo = input('>>Intervalo[t0=0,t]: ')
+	amplitud = input('>>Amplitud: ')
+	global limite 
+	limite = limite + intervalo
+	X = np.linspace(0, intervalo, 50, endpoint=True)
+	C = np.exp(X)
+	amplificar(C,amplitud)
+	exp = np.array(C)
+	pl.plot(X,exp)
+	listaSenialesContinuas.append(exp)	
 
 def discretas():
 	print "Discretas no definidas aún"
+
+def amplificar(senial,amplitud):
+	for i in range (len(senial)):
+		senial[i]=senial[i]*amplitud
 
 
 #Funcion que convoluciona dos señales.
 #@Param seniales: Es una lista con los valores de las 2 seniales a convolucionar.
 #Agrega la lista resultante senialRes a la lista recibida seniales.
 def convoluciona(seniales):
-    senial1   = seniales[0]
+    senial1   = seniales[0][::-1]
+    #print senial1
     senial2   = seniales[1]
+    #print senial2
     senialRes = []
     for i in range(len(senial1)+len(senial2)-1):
 		senialRes.append(0)
@@ -77,6 +124,7 @@ def convoluciona(seniales):
     	for j in range (len(senial2)):
             senialRes[i+j]=senialRes[i+j]+senial1[i]*senial2[j]
     seniales.append(np.array(senialRes)) # Cast de <list> a <np.array> para usarse en graficador
+    #print senialRes
 
 #FUNCION PRINCIPAL
 def main():
@@ -95,9 +143,12 @@ def main():
 
 
 def graficarConvolucion(senialRes):
-	print "graficarConvolucion: Aun no definida correctamente"
-	X = np.linspace(-6.28, 6.28, 99, endpoint=True)
-	pl.plot(X,senialRes)
+	try:
+		print "graficarConvolucion: Aun no definida correctamente"
+		X = np.linspace(0, limite , len(senialRes), endpoint=True)
+		pl.plot(X,senialRes)
+	except Exception as ex:
+		print "Error inesperado: " , type(ex)
 	
 
 
