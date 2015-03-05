@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import pylab as pl
+import numpy as np
+import math
+
+
+def graficarConvolucion():
+	limiteSup = 5
+	limiteInf = -5
+	imp = {1,2,3,4,5,6,7,8,9,10,11}
+	try:
+		print "graficarConvolucion: Aun no definida correctamente"
+		X = np.linspace(limiteInf, limiteSup , len(senialRes), endpoint=True)
+		imp = np.array(imp)
+		pl.steam(X,imp)
+	except Exception as ex:
+		print "Error inesperado en gaficarConvolucion(): " , type(ex)
+
+graficarConvolucion()
